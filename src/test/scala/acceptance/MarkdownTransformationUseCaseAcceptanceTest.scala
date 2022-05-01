@@ -17,13 +17,13 @@ final class MarkdownTransformationUseCaseAcceptanceTest
   test("it should transform a markdown document") {
     val tesCaseGen = for
       links <- Gen.containerOf[Set, Link](linkGen)
-      linkWithReference = links.zipWithIndex.map { case (link, index) =>
-        link -> Reference(index)
-      }
+      linksWithReference = links.zipWithIndex.map { case (link, index) =>
+        link -> Reference(index + 1)
+      }.toMap
       numberOfLines <- Gen.choose(0, 5)
       lines <- Gen.listOfN[Line](numberOfLines, lineGen())
       initialState = MarkdownTransformationState.empty.set(lines)
-      expectedState = initialState
+      expectedState = initialState.set(linksWithReference)
     yield TestCase(initialState, expectedState)
 
     PropF.forAllF(tesCaseGen) { testCase =>

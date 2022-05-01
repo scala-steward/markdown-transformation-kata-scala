@@ -6,7 +6,7 @@ import infrastructure.{
   InMemoryLinksRepository,
   LinksRepositoryState,
 }
-import model.Line
+import model.{Line, Link, Reference}
 
 import cats.effect.IO
 import cats.effect.kernel.Ref
@@ -17,6 +17,9 @@ final case class MarkdownTransformationState(
 ):
   def set(lines: List[Line]): MarkdownTransformationState =
     copy(markdownReaderState = markdownReaderState.set(lines))
+
+  def set(links: Map[Link, Reference]): MarkdownTransformationState =
+    copy(linksRepositoryState = linksRepositoryState.set(links))
 
 object MarkdownTransformationState:
   def empty: MarkdownTransformationState = MarkdownTransformationState(

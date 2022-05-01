@@ -5,7 +5,8 @@ import model.{Link, LinksRepository, Reference}
 
 import cats.effect.{IO, Ref}
 
-final case class LinksRepositoryState(links: Map[Link, Reference])
+final case class LinksRepositoryState(links: Map[Link, Reference]):
+  def set(newLinks: Map[Link, Reference]): LinksRepositoryState = copy(links = newLinks)
 
 object LinksRepositoryState:
   def empty: LinksRepositoryState = LinksRepositoryState(Map.empty)
