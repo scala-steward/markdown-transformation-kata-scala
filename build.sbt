@@ -32,16 +32,23 @@ scalacOptions ++= Seq(
 )
 
 lazy val root = (project in file("."))
+  .enablePlugins(JavaAppPackaging)
   .settings(
     name := "markdown-transformation-kata-scala",
+    Compile / mainClass := Some("es.eriktorr.markdown_transformation.MarkdownTransformationApp"),
     libraryDependencies ++= Seq(
       "co.fs2" %% "fs2-core" % "3.2.7",
       "co.fs2" %% "fs2-io" % "3.2.7",
+      "com.github.scopt" %% "scopt" % "4.0.1",
       "io.monix" %% "newtypes-core" % "0.2.1",
       "org.scalameta" %% "munit" % "0.7.29" % Test,
-      "org.typelevel" %% "kittens" % "3.0.0-M4",
-      "org.typelevel" %% "munit-cats-effect-3" % "1.0.7" % Test,
+      "org.scalameta" %% "munit-scalacheck" % "0.7.29" % Test,
       "org.typelevel" %% "cats-effect" % "3.3.11",
+      "org.typelevel" %% "kittens" % "3.0.0-M4",
+      "org.typelevel" %% "log4cats-slf4j" % "2.3.0",
+      "org.typelevel" %% "munit-cats-effect-3" % "1.0.7" % Test,
+      "org.typelevel" %% "scalacheck-effect" % "1.0.4" % Test,
+      "org.typelevel" %% "scalacheck-effect-munit" % "1.0.4" % Test,
     ),
     onLoadMessage := {
       s"""Custom tasks:
