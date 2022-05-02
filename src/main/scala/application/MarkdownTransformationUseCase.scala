@@ -10,19 +10,15 @@ import fs2.{Chunk, Stream}
 
 final class MarkdownTransformationUseCase(
     markdownReader: MarkdownReader,
+    markdownWriter: MarkdownWriter,
     footnotesRepository: FootnotesRepository,
 ):
   def run: IO[Unit] = for
-    _ <- (markdownReader.lines
-      .evalTap(line => IO.delay(println(s" >> BEFORE: ${line.value}"))) // TODO
-      .flatMap(transform)
-      .evalTap(line => IO.delay(println(s" >> AFTER: ${line.value}")))
-      .map(_.value) ++ Stream
-      .evals(footnotesRepository.footnotes)
-      .evalTap(footnote => IO.delay(println(s" >> FOOTNOTE: $footnote"))) // TODO
+    _ <- (markdownReader.lines.flatMap(transform) ++ Stream
+      .evals(footnotesRepository.footnotes.map(_.sorted))
       .map { case Footnote(reference, link) =>
-        s"[^${reference.value}]: ${link.url.value}"
-      }).compile.drain
+        Line(s"[^${reference.value}]: ${link.url.value}")
+      }).through(markdownWriter.write).compile.drain
   yield ()
 
   private[this] def transform(line: Line) =

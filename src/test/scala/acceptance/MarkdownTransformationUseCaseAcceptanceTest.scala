@@ -23,8 +23,8 @@ final class MarkdownTransformationUseCaseAcceptanceTest
       }
       numberOfLines <- Gen.choose(0, 5)
       lines <- Gen.listOfN[Line](numberOfLines, lineGen(links))
-      initialState = MarkdownTransformationState.empty.setLines(lines)
-      expectedState = initialState.setFootnotes(footnotes)
+      initialState = MarkdownTransformationState.empty.setReaderLines(lines)
+      expectedState = initialState.setFootnotes(footnotes).setWriterLines(lines)
     yield TestCase(initialState, expectedState)
 
     forAllF(tesCaseGen) { testCase =>
