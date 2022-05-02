@@ -3,5 +3,6 @@ package model
 
 import cats.effect.IO
 
-trait LinksRepository:
+trait FootnotesRepository:
   def save(link: Link): IO[Reference]
+  def footnotes: IO[List[Footnote]]

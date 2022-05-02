@@ -3,28 +3,28 @@ package es.eriktorr.markdown_transformation
 import infrastructure.{
   FakeMarkdownReader,
   FakeMarkdownReaderState,
-  InMemoryLinksRepository,
-  LinksRepositoryState,
+  FootnotesRepositoryState,
+  InMemoryFootnotesRepository,
 }
-import model.{Line, Link, Reference}
+import model.{Footnote, Line, Link, Reference}
 
 import cats.effect.IO
 import cats.effect.kernel.Ref
 
 final case class MarkdownTransformationState(
     markdownReaderState: FakeMarkdownReaderState,
-    linksRepositoryState: LinksRepositoryState,
+    footnotesRepositoryState: FootnotesRepositoryState,
 ):
-  def set(lines: List[Line]): MarkdownTransformationState =
+  def setLines(lines: List[Line]): MarkdownTransformationState =
     copy(markdownReaderState = markdownReaderState.set(lines))
 
-  def set(links: Map[Link, Reference]): MarkdownTransformationState =
-    copy(linksRepositoryState = linksRepositoryState.set(links))
+  def setFootnotes(footnotes: List[Footnote]): MarkdownTransformationState =
+    copy(footnotesRepositoryState = footnotesRepositoryState.set(footnotes))
 
 object MarkdownTransformationState:
   def empty: MarkdownTransformationState = MarkdownTransformationState(
     FakeMarkdownReaderState.empty,
-    LinksRepositoryState.empty,
+    FootnotesRepositoryState.empty,
   )
 
 object FakeMarkdownTransformationResources:
@@ -32,16 +32,18 @@ object FakeMarkdownTransformationResources:
       run: MarkdownTransformationResources => IO[A],
   ): IO[(Either[Throwable, A], MarkdownTransformationState)] = for
     markdownReaderStateRef <- Ref.of[IO, FakeMarkdownReaderState](initialState.markdownReaderState)
-    linksRepositoryStateRef <- Ref.of[IO, LinksRepositoryState](initialState.linksRepositoryState)
+    footnotesRepositoryStateRef <- Ref.of[IO, FootnotesRepositoryState](
+      initialState.footnotesRepositoryState,
+    )
     resources = MarkdownTransformationResources(
       FakeMarkdownReader(markdownReaderStateRef),
-      InMemoryLinksRepository(linksRepositoryStateRef),
+      InMemoryFootnotesRepository(footnotesRepositoryStateRef),
     )
     result <- run(resources).attempt
     finalMarkdownReaderState <- markdownReaderStateRef.get
-    finalLinksRepositoryState <- linksRepositoryStateRef.get
+    finalFootnotesRepositoryState <- footnotesRepositoryStateRef.get
     finalState = initialState.copy(
       markdownReaderState = finalMarkdownReaderState,
-      linksRepositoryState = finalLinksRepositoryState,
+      footnotesRepositoryState = finalFootnotesRepositoryState,
     )
   yield (result, finalState)
