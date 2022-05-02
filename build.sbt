@@ -9,8 +9,8 @@ Global / cancelable := true
 Global / fork := true
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-Compile / compile / wartremoverErrors ++= Warts.unsafe
-Test / compile / wartremoverErrors ++= Warts.unsafe
+Compile / compile / wartremoverErrors ++= Warts.unsafe.filter(_ != Wart.DefaultArguments)
+Test / compile / wartremoverErrors ++= Warts.unsafe.filter(_ != Wart.DefaultArguments)
 
 ThisBuild / semanticdbEnabled := true
 ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
@@ -39,13 +39,18 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "co.fs2" %% "fs2-core" % "3.2.7",
       "co.fs2" %% "fs2-io" % "3.2.7",
-      "com.github.scopt" %% "scopt" % "4.0.1",
+//      "com.github.scopt" %% "scopt" % "4.0.1",
       "io.monix" %% "newtypes-core" % "0.2.1",
+      "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.17.2" % Runtime,
       "org.scalameta" %% "munit" % "0.7.29" % Test,
       "org.scalameta" %% "munit-scalacheck" % "0.7.29" % Test,
+      "org.typelevel" %% "cats-core" % "2.7.0",
+      "org.typelevel" %% "cats-kernel" % "2.7.0",
       "org.typelevel" %% "cats-effect" % "3.3.11",
+      "org.typelevel" %% "cats-effect-kernel" % "3.3.11",
       "org.typelevel" %% "kittens" % "3.0.0-M4",
       "org.typelevel" %% "log4cats-slf4j" % "2.3.0",
+      "org.typelevel" %% "log4cats-core_sjs1" % "2.3.0",
       "org.typelevel" %% "munit-cats-effect-3" % "1.0.7" % Test,
       "org.typelevel" %% "scalacheck-effect" % "1.0.4" % Test,
       "org.typelevel" %% "scalacheck-effect-munit" % "1.0.4" % Test,
