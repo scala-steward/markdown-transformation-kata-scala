@@ -46,4 +46,4 @@ final class MarkdownTransformationUseCase(
       .lastOr(Line.empty)
 
 object MarkdownTransformationUseCase:
-  private val linkPattern = "\\[(.+?)]\\((.+?)\\)".r.unanchored
+  private val linkPattern = "\\[([^\\^].+?)]\\((.+?)\\)".r.unanchored
