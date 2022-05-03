@@ -4,6 +4,7 @@ package integration
 import infrastructure.FileMarkdownReader
 import infrastructure.MarkdownGenerators.textGen
 import model.Line
+import spec.MarkdownFileSpec
 
 import cats.effect.{IO, Resource}
 import munit.{CatsEffectSuite, ScalaCheckEffectSuite}
@@ -14,22 +15,7 @@ import org.scalacheck.{Gen, Test}
 import java.io.{File, FileWriter}
 import java.nio.file.{Files, Path}
 
-final class FileMarkdownReaderIntegrationTest extends CatsEffectSuite with ScalaCheckEffectSuite:
-
-  override def scalaCheckTestParameters: Test.Parameters =
-    super.scalaCheckTestParameters.withMinSuccessfulTests(1).withWorkers(1)
-
-  val temporaryFileFixture: Fixture[Path] =
-    import scala.language.unsafeNulls
-    val suiteName = "md-converter-file-reader-integration-test"
-    ResourceSuiteLocalFixture(
-      s"$suiteName-temporary-file",
-      Resource.make(IO.blocking(Files.createTempFile(suiteName, ".md")))(path =>
-        IO.blocking(Files.deleteIfExists(path)),
-      ),
-    )
-
-  override def munitFixtures: Seq[Fixture[?]] = List(temporaryFileFixture)
+final class FileMarkdownReaderIntegrationTest extends MarkdownFileSpec("file-reader"):
 
   test("it should read a file line-by-line") {
     val linesGen =
