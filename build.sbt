@@ -25,10 +25,6 @@ scalacOptions ++= Seq(
   "-unchecked",
   "-Yexplicit-nulls", // https://docs.scala-lang.org/scala3/reference/other-new-features/explicit-nulls.html
   "-Ysafe-init", // https://docs.scala-lang.org/scala3/reference/other-new-features/safe-initialization.html
-  //  "-rewrite",
-  //  "-new-syntax" // https://docs.scala-lang.org/scala3/reference/other-new-features/control-syntax.html
-  //  "-rewrite",
-  //  "-indent" // https://docs.scala-lang.org/scala3/reference/other-new-features/indentation.html
 )
 
 lazy val root = (project in file("."))

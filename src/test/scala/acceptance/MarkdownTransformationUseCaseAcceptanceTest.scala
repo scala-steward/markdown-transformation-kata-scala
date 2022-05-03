@@ -21,7 +21,7 @@ final class MarkdownTransformationUseCaseAcceptanceTest
       numberOfLines <- Gen.choose(0, 5)
       lineFragments <- Gen.listOfN[List[Fragment]](numberOfLines, fragmentsGen(links))
       footnotes = lineFragments
-        .flatMap(xs => xs.collect { case LinkFragment(link) => link })
+        .flatMap(_.collect { case LinkFragment(link) => link })
         .toSet
         .zipWithIndex
         .map { case (link, index) => Footnote(Reference(index + 1), link) }
@@ -38,7 +38,7 @@ final class MarkdownTransformationUseCaseAcceptanceTest
           .map(Line(_)),
       )
       expectedState = initialState
-        .setFootnotes(footnotes)
+        .setFootnotes(footnotes.reverse)
         .setWriterLines(
           (lineFragments
             .map(_.map {
@@ -58,6 +58,10 @@ final class MarkdownTransformationUseCaseAcceptanceTest
       FakeMarkdownTransformationResources
         .withResources(testCase.initialState)(_.markdownTransformationUseCase.run)
         .map { case (result, finalState) =>
+          // TODO
+          println(s"\n\n >> RESULT: ${finalState.footnotesRepositoryState.footnotes}\n")
+          println(s"\n\n >> EXPECT: ${testCase.expectedState.footnotesRepositoryState.footnotes}\n")
+          // TODO
           assert(result.isRight)
           assertEquals(finalState, testCase.expectedState)
         }
