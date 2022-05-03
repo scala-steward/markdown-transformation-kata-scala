@@ -31,7 +31,7 @@ final class FileMarkdownReaderIntegrationTest extends CatsEffectSuite with Scala
 
   override def munitFixtures: Seq[Fixture[?]] = List(temporaryFileFixture)
 
-  test("it should read a file") {
+  test("it should read a file line-by-line") {
     val linesGen =
       Gen.listOf(Gen.frequency(7 -> textGen(1, 100).map(Line(_)), 3 -> Gen.const(Line.empty)))
 
