@@ -11,57 +11,62 @@ import munit.{CatsEffectSuite, ScalaCheckEffectSuite}
 import org.scalacheck.Gen
 import org.scalacheck.effect.PropF.forAllF
 
+import scala.annotation.tailrec
+
 final class MarkdownTransformationUseCaseAcceptanceTest
     extends CatsEffectSuite
     with ScalaCheckEffectSuite:
 
   test("it should transform a markdown document") {
+    def footnotesFrom(lineFragments: List[List[Fragment]]) =
+      @tailrec
+      def unique(links: List[Link], linksAcc: List[Link]): List[Link] = links match
+        case Nil => linksAcc
+        case ::(head, next) =>
+          unique(next, if linksAcc.contains(head) then linksAcc else head :: linksAcc)
+
+      unique(
+        lineFragments.flatMap(_.collect { case LinkFragment(link) => link }),
+        List.empty,
+      ).reverse.zipWithIndex.map { case (link, index) => Footnote(Reference(index + 1), link) }
+
+    def linesFrom(lineFragments: List[List[Fragment]]) = lineFragments
+      .map(_.map {
+        _ match
+          case LinkFragment(link) => s"[${link.text}](${link.url})"
+          case TextFragment(text) => text
+      })
+      .map(_.mkString(" "))
+      .map(Line(_))
+
+    def transformedLinesFrom(lineFragments: List[List[Fragment]], footnotes: List[Footnote]) =
+      (lineFragments
+        .map(_.map {
+          _ match
+            case LinkFragment(link) =>
+              footnotes
+                .find(_.link == link)
+                .fold("")(x => s"${x.link.text} [^${x.reference.value}]")
+            case TextFragment(text) => text
+        })
+        .map(_.mkString(" ")) ++ footnotes.map(x => s"[^${x.reference.value}]: ${x.link.url}"))
+        .map(Line(_))
+
     val tesCaseGen = for
       links <- Gen.nonEmptyContainerOf[Set, Link](linkGen).map(_.toList)
       numberOfLines <- Gen.choose(0, 5)
       lineFragments <- Gen.listOfN[List[Fragment]](numberOfLines, fragmentsGen(links))
-      footnotes = lineFragments
-        .flatMap(_.collect { case LinkFragment(link) => link })
-        .toSet
-        .zipWithIndex
-        .map { case (link, index) => Footnote(Reference(index + 1), link) }
-        .toList
-        .sorted
-      initialState = MarkdownTransformationState.empty.setReaderLines(
-        lineFragments
-          .map(_.map {
-            _ match
-              case LinkFragment(link) => s"[${link.text}](${link.url})"
-              case TextFragment(text) => text
-          })
-          .map(_.mkString(" "))
-          .map(Line(_)),
-      )
+      footnotes = footnotesFrom(lineFragments)
+      initialState = MarkdownTransformationState.empty.setReaderLines(linesFrom(lineFragments))
       expectedState = initialState
         .setFootnotes(footnotes.reverse)
-        .setWriterLines(
-          (lineFragments
-            .map(_.map {
-              _ match
-                case LinkFragment(link) =>
-                  footnotes
-                    .find(_.link == link)
-                    .fold("")(x => s"${x.link.text} [^${x.reference.value}]")
-                case TextFragment(text) => text
-            })
-            .map(_.mkString(" ")) ++ footnotes
-            .map(x => s"[^${x.reference.value}]: ${x.link.url}")).map(Line(_)),
-        )
+        .setWriterLines(transformedLinesFrom(lineFragments, footnotes))
     yield TestCase(initialState, expectedState)
 
     forAllF(tesCaseGen) { testCase =>
       FakeMarkdownTransformationResources
         .withResources(testCase.initialState)(_.markdownTransformationUseCase.run)
         .map { case (result, finalState) =>
-          // TODO
-          println(s"\n\n >> RESULT: ${finalState.footnotesRepositoryState.footnotes}\n")
-          println(s"\n\n >> EXPECT: ${testCase.expectedState.footnotesRepositoryState.footnotes}\n")
-          // TODO
           assert(result.isRight)
           assertEquals(finalState, testCase.expectedState)
         }
