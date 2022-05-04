@@ -7,7 +7,8 @@ import scala.util.control.NoStackTrace
 final case class MarkdownTransformationParams(
     inputFilename: String = "",
     outputFilename: String = "",
-)
+):
+  def asString: String = s"input-filename=$inputFilename, output-filename=$outputFilename"
 
 object MarkdownTransformationParams:
   def paramsFrom(args: List[String]): IO[MarkdownTransformationParams] =

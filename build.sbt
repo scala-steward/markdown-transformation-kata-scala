@@ -15,9 +15,6 @@ Test / compile / wartremoverErrors ++= Warts.unsafe.filter(_ != Wart.DefaultArgu
 ThisBuild / semanticdbEnabled := true
 ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 
-/** So to go from old-style syntax to new-style indented code one has to invoke the compiler twice,
-  * first with options `-rewrite -new-syntax`, then again with options `-rewrite -indent`.
-  */
 scalacOptions ++= Seq(
   "-Xfatal-warnings",
   "-deprecation",
@@ -31,12 +28,15 @@ lazy val root = (project in file("."))
   .enablePlugins(JavaAppPackaging)
   .settings(
     name := "markdown-transformation-kata-scala",
+    Universal / maintainer := "https://eriktorr.es",
     Compile / mainClass := Some("es.eriktorr.markdown_transformation.MarkdownTransformationApp"),
     libraryDependencies ++= Seq(
       "co.fs2" %% "fs2-core" % "3.2.7",
       "co.fs2" %% "fs2-io" % "3.2.7",
       "com.github.scopt" %% "scopt" % "4.0.1",
       "io.monix" %% "newtypes-core" % "0.2.1",
+      "org.apache.logging.log4j" % "log4j-api" % "2.17.2" % Runtime,
+      "org.apache.logging.log4j" % "log4j-core" % "2.17.2" % Runtime,
       "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.17.2" % Runtime,
       "org.scalameta" %% "munit" % "0.7.29" % Test,
       "org.scalameta" %% "munit-scalacheck" % "0.7.29" % Test,
