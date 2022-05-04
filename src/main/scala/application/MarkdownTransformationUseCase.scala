@@ -16,11 +16,10 @@ final class MarkdownTransformationUseCase(
     footnotesRepository: FootnotesRepository,
 ):
   def run: IO[Unit] =
-    for _ <- (markdownReader.lines.flatMap(transform) ++ format(footnotesRepository.footnotes))
-        .through(markdownWriter.write)
-        .compile
-        .drain
-    yield ()
+    (markdownReader.lines.flatMap(transform) ++ format(footnotesRepository.footnotes))
+      .through(markdownWriter.write)
+      .compile
+      .drain
 
   private[this] def transform(line: Line) =
     Stream
