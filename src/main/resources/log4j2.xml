@@ -6,7 +6,7 @@
     </Console>
 </Appenders>
 <Loggers>
-    <Logger name="es.eriktorr.markdown_transformation" level="info">
+    <Logger name="es.eriktorr.markdown_transformation" level="info" additivity="false">
         <AppenderRef ref="Console"/>
     </Logger>
     <Root level="error">
