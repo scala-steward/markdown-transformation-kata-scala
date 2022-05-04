@@ -1,5 +1,5 @@
 package es.eriktorr.markdown_transformation
-package spec
+package infrastructure
 
 import cats.effect.{IO, Resource}
 import munit.{CatsEffectSuite, ScalaCheckEffectSuite}
@@ -7,7 +7,7 @@ import org.scalacheck.Test
 
 import java.nio.file.{Files, Path}
 
-abstract class MarkdownFileSpec(name: String) extends CatsEffectSuite with ScalaCheckEffectSuite:
+abstract class MarkdownFileSuite(name: String) extends CatsEffectSuite with ScalaCheckEffectSuite:
 
   override def scalaCheckTestParameters: Test.Parameters =
     super.scalaCheckTestParameters.withMinSuccessfulTests(1).withWorkers(1)

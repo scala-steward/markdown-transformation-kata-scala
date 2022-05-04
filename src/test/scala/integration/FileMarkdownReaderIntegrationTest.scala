@@ -1,10 +1,9 @@
 package es.eriktorr.markdown_transformation
 package integration
 
-import infrastructure.FileMarkdownReader
-import infrastructure.MarkdownGenerators.textGen
+import infrastructure.MarkdownGenerators.linesGen
+import infrastructure.{FileMarkdownReader, MarkdownFileSuite}
 import model.Line
-import spec.MarkdownFileSpec
 
 import cats.effect.{IO, Resource}
 import munit.{CatsEffectSuite, ScalaCheckEffectSuite}
@@ -15,12 +14,9 @@ import org.scalacheck.{Gen, Test}
 import java.io.{File, FileWriter}
 import java.nio.file.{Files, Path}
 
-final class FileMarkdownReaderIntegrationTest extends MarkdownFileSpec("file-reader"):
+final class FileMarkdownReaderIntegrationTest extends MarkdownFileSuite("file-reader"):
 
   test("it should read a file line-by-line") {
-    val linesGen =
-      Gen.listOf(Gen.frequency(7 -> textGen(1, 100).map(Line(_)), 3 -> Gen.const(Line.empty)))
-
     forAllF(linesGen) { lines =>
       for
         fileName <- IO.delay(temporaryFileFixture().toString)

@@ -2,6 +2,8 @@ package es.eriktorr.markdown_transformation
 
 import cats.effect.IO
 
+import scala.util.control.NoStackTrace
+
 final case class MarkdownTransformationParams(
     inputFilename: String = "",
     outputFilename: String = "",
@@ -35,5 +37,7 @@ object MarkdownTransformationParams:
       )
     IO.fromOption(OParser.parse(argParser, args, MarkdownTransformationParams())) {
       Console.err.println(OParser.usage(argParser))
-      IllegalArgumentException()
+      IllegalArguments
     }
+
+case object IllegalArguments extends NoStackTrace

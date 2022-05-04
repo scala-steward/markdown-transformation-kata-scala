@@ -22,6 +22,9 @@ object MarkdownGenerators:
     linkFragments <- Gen.listOfN[Link](numberOfLinks, Gen.oneOf(links)).map(_.map(LinkFragment(_)))
   yield Random.shuffle(textFragments ++ linkFragments)
 
+  val linesGen: Gen[List[Line]] =
+    Gen.listOf(Gen.frequency(7 -> textGen(1, 100).map(Line(_)), 3 -> Gen.const(Line.empty)))
+
   /** https://medium.com/@supermanue/building-useful-scalacheck-generators-71635d1edb9d */
   private[this] def urlGen: Gen[String] =
     def httpTypeGen: Gen[String] = Gen.oneOf(Seq("http", "https"))
@@ -41,7 +44,7 @@ object MarkdownGenerators:
       path <- pathGen
     yield http + "//" + domain + "." + domainType + "/" + path
 
-  def textGen(minLength: Int = 3, maxLength: Int = 10): Gen[String] = for
+  private[this] def textGen(minLength: Int = 3, maxLength: Int = 10): Gen[String] = for
     length <- Gen.choose(minLength, maxLength)
     text <- Gen.listOfN[Char](length, Gen.alphaNumChar).map(_.mkString)
   yield text

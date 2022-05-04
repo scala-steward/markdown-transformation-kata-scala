@@ -2,11 +2,13 @@ package es.eriktorr.markdown_transformation
 package application
 
 import application.MarkdownTransformationUseCase.linkPattern
-import model.*
+import model.{Footnote, *}
 
 import cats.effect.IO
 import cats.implicits.*
 import fs2.{Chunk, Stream}
+
+import scala.collection.immutable.List
 
 final class MarkdownTransformationUseCase(
     markdownReader: MarkdownReader,
@@ -14,11 +16,10 @@ final class MarkdownTransformationUseCase(
     footnotesRepository: FootnotesRepository,
 ):
   def run: IO[Unit] = for
-    _ <- (markdownReader.lines.flatMap(transform) ++ Stream
-      .evals(footnotesRepository.footnotes.map(_.sorted))
-      .map { case Footnote(reference, link) =>
-        Line(s"[^${reference.value}]: ${link.url.value}")
-      }).through(markdownWriter.write).compile.drain
+    _ <- (markdownReader.lines.flatMap(transform) ++ format(footnotesRepository.footnotes))
+      .through(markdownWriter.write)
+      .compile
+      .drain
   yield ()
 
   private[this] def transform(line: Line) =
@@ -40,6 +41,12 @@ final class MarkdownTransformationUseCase(
         case None => IO.none
       }
       .lastOr(Line.empty)
+
+  private[this] def format(footnotes: IO[List[Footnote]]) = Stream
+    .evals(footnotes.map(_.sorted))
+    .map { case Footnote(reference, link) =>
+      Line(s"[^${reference.value}]: ${link.url.value}")
+    }
 
 object MarkdownTransformationUseCase:
   private val linkPattern = "\\[([^\\^].+?)]\\((.+?)\\)".r.unanchored
