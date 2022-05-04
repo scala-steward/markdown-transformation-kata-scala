@@ -18,13 +18,12 @@ final class InMemoryFootnotesRepository(stateRef: Ref[IO, FootnotesRepositorySta
     currentState.footnotes.find(_.link === link) match
       case Some(Footnote(reference, _)) => (currentState, reference)
       case None =>
-        val lastReference = currentState.footnotes
-          .map(_.reference)
-          .fold(Reference.zero)((x, y) => if x.value > y.value then x else y)
-        val reference = Reference(lastReference.value + 1)
+        val lastReference =
+          currentState.footnotes.headOption.map(_.reference).fold(Reference.zero)(identity)
+        val footnote = Footnote(lastReference.increment, link)
         (
-          currentState.copy(footnotes = Footnote(reference, link) :: currentState.footnotes),
-          reference,
+          currentState.copy(footnotes = footnote :: currentState.footnotes),
+          footnote.reference,
         )
   }
 
