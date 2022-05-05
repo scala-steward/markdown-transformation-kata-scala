@@ -30,7 +30,7 @@ final class MarkdownTransformationUseCaseAcceptanceTest
   }
 
 object MarkdownTransformationUseCaseAcceptanceTest:
-  final case class TestCase(
+  final private case class TestCase(
       initialState: MarkdownTransformationState,
       expectedState: MarkdownTransformationState,
   )
@@ -74,7 +74,7 @@ object MarkdownTransformationUseCaseAcceptanceTest:
       .map(_.mkString(" ")) ++ footnotes.map(x => s"[^${x.reference.value}]: ${x.link.url}"))
       .map(Line(_))
 
-  val tesCaseGen: Gen[TestCase] = for
+  private val tesCaseGen: Gen[TestCase] = for
     links <- Gen.nonEmptyContainerOf[Set, Link](linkGen).map(_.toList)
     numberOfLines <- Gen.choose(0, 5)
     lineFragments <- Gen.listOfN[List[Fragment]](numberOfLines, fragmentsGen(links))
