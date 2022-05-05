@@ -51,4 +51,4 @@ object MarkdownTransformationUseCase:
   /** @see
     *   [[https://www.regular-expressions.info/lookaround.html Regular expressions lookaround]]
     */
-  private val linkPattern = "(?<!!)\\[(?<text>[^\\^].+?)]\\((?<url>.+?)\\)".r.unanchored
+  private val linkPattern = raw"(?<!!)\[(?<text>[^\^].+?)]\((?<url>.+?)\)".r.unanchored
