@@ -9,7 +9,9 @@ Global / cancelable := true
 Global / fork := true
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-Compile / compile / wartremoverErrors ++= Warts.unsafe.filter(_ != Wart.DefaultArguments)
+Compile / compile / wartremoverErrors ++= Warts.unsafe.filter(
+  !List(Wart.DefaultArguments, Wart.Throw).contains(_),
+)
 Test / compile / wartremoverErrors ++= Warts.unsafe.filter(_ != Wart.DefaultArguments)
 
 ThisBuild / semanticdbEnabled := true
