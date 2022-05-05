@@ -41,4 +41,6 @@ object MarkdownTransformationParams:
       IllegalArguments
     }
 
+    // TODO: use validation
+
 case object IllegalArguments extends NoStackTrace

@@ -2,7 +2,7 @@ package es.eriktorr.markdown_transformation
 package acceptance
 
 import acceptance.MarkdownTransformationUseCaseAcceptanceTest.{tesCaseGen, TestCase}
-import infrastructure.MarkdownGenerators.Fragment.{LinkFragment, TextFragment}
+import infrastructure.MarkdownGenerators.Fragment.{ImageFragment, LinkFragment, TextFragment}
 import infrastructure.MarkdownGenerators.{fragmentsGen, linkGen, Fragment}
 import model.{Footnote, Line, Link, Reference}
 
@@ -50,6 +50,7 @@ object MarkdownTransformationUseCaseAcceptanceTest:
   private[this] def linesFrom(lineFragments: List[List[Fragment]]) = lineFragments
     .map(_.map {
       _ match
+        case ImageFragment(image) => s"![${image.caption}](${image.url})"
         case LinkFragment(link) => s"[${link.text}](${link.url})"
         case TextFragment(text) => text
     })
@@ -63,6 +64,7 @@ object MarkdownTransformationUseCaseAcceptanceTest:
     (lineFragments
       .map(_.map {
         _ match
+          case ImageFragment(image) => s"![${image.caption}](${image.url})"
           case LinkFragment(link) =>
             footnotes
               .find(_.link === link)

@@ -48,4 +48,7 @@ final class MarkdownTransformationUseCase(
     }
 
 object MarkdownTransformationUseCase:
-  private val linkPattern = "\\[(?<text>[^\\^].+?)]\\((?<url>.+?)\\)".r.unanchored
+  /** @see
+    *   [[https://www.regular-expressions.info/lookaround.html Regular expressions lookaround]]
+    */
+  private val linkPattern = "(?<!!)\\[(?<text>[^\\^].+?)]\\((?<url>.+?)\\)".r.unanchored
