@@ -24,8 +24,8 @@ final class MarkdownTransformationUseCase(
       linkPattern.replaceAllIn(
         line.value,
         matcher =>
-          import cats.effect.unsafe.implicits.global
           val link = Link(LinkText(matcher.group("text")), LinkUrl(matcher.group("url")))
+          import cats.effect.unsafe.implicits.global
           footnotesRepository.save(link).attempt.unsafeRunSync() match
             case Right(reference) => s"${link.text} [^${reference.value}]"
             case Left(error) => throw error,
