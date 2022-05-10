@@ -36,7 +36,7 @@ lazy val root = (project in file("."))
       "co.fs2" %% "fs2-core" % "3.2.7",
       "co.fs2" %% "fs2-io" % "3.2.7",
       "com.github.scopt" %% "scopt" % "4.0.1",
-      "io.monix" %% "newtypes-core" % "0.2.1",
+      "io.monix" %% "newtypes-core" % "0.2.3",
       "org.apache.logging.log4j" % "log4j-api" % "2.17.2" % Runtime,
       "org.apache.logging.log4j" % "log4j-core" % "2.17.2" % Runtime,
       "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.17.2" % Runtime,
