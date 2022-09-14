@@ -39,7 +39,7 @@ object MarkdownTransformationParamsUnitTest:
   )
 
   private val tesCaseGen: Gen[TestCase] = for
-    inputFilename :: outputFilename :: Nil <- Gen
+    case inputFilename :: outputFilename :: Nil <- Gen
       .containerOfN[Set, String](2, textGen())
       .map(_.toList)
     inputArgument <- Gen.oneOf("-i", "--input")
