@@ -33,8 +33,8 @@ lazy val root = (project in file("."))
     Universal / maintainer := "https://eriktorr.es",
     Compile / mainClass := Some("es.eriktorr.markdown_transformation.MarkdownTransformationApp"),
     libraryDependencies ++= Seq(
-      "co.fs2" %% "fs2-core" % "3.10.1",
-      "co.fs2" %% "fs2-io" % "3.10.1",
+      "co.fs2" %% "fs2-core" % "3.10.2",
+      "co.fs2" %% "fs2-io" % "3.10.2",
       "com.github.scopt" %% "scopt" % "4.1.0",
       "io.monix" %% "newtypes-core" % "0.2.3",
       "org.apache.logging.log4j" % "log4j-api" % "2.23.1" % Runtime,
