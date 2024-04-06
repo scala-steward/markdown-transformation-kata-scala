@@ -19,7 +19,7 @@ final class MarkdownTransformationUseCase(
       .drain
 
   @SuppressWarnings(Array("org.wartremover.warts.Throw"))
-  private[this] def transform(line: Line) = Stream
+  private def transform(line: Line) = Stream
     .emit(
       linkPattern.replaceAllIn(
         line.value,
@@ -33,7 +33,7 @@ final class MarkdownTransformationUseCase(
     )
     .map(Line(_))
 
-  private[this] def format(footnotes: IO[List[Footnote]]) = Stream
+  private def format(footnotes: IO[List[Footnote]]) = Stream
     .evals(footnotes.map(_.sorted))
     .map { case Footnote(reference, link) =>
       Line(s"[^${reference.value}]: ${link.url.value}")

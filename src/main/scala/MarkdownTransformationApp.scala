@@ -5,7 +5,7 @@ import cats.effect.{ExitCode, IO, IOApp}
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 object MarkdownTransformationApp extends IOApp:
-  private[this] def program(params: MarkdownTransformationParams) =
+  private def program(params: MarkdownTransformationParams) =
     MarkdownTransformationResources.impl(params).use(_.markdownTransformationUseCase.run)
 
   override def run(args: List[String]): IO[ExitCode] =
