@@ -36,7 +36,7 @@ object MarkdownGenerators:
   /** @see
     *   [[https://medium.com/@supermanue/building-useful-scalacheck-generators-71635d1edb9d Building useful Scalacheck Generators]]
     */
-  private[this] def urlGen: Gen[String] =
+  private def urlGen: Gen[String] =
     def httpTypeGen: Gen[String] = Gen.oneOf(Seq("http", "https"))
     def domainGen: Gen[String] = for
       numberOfFragments <- Gen.choose(1, 3)
