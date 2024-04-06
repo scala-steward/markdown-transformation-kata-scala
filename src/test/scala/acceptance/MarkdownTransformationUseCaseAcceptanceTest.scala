@@ -35,7 +35,7 @@ object MarkdownTransformationUseCaseAcceptanceTest:
       expectedState: MarkdownTransformationState,
   )
 
-  private[this] def footnotesFrom(lineFragments: List[List[Fragment]]) =
+  private def footnotesFrom(lineFragments: List[List[Fragment]]) =
     @tailrec
     def unique(links: List[Link], linksAcc: List[Link]): List[Link] = links match
       case Nil => linksAcc
@@ -47,7 +47,7 @@ object MarkdownTransformationUseCaseAcceptanceTest:
       List.empty,
     ).reverse.zipWithIndex.map { case (link, index) => Footnote(Reference(index + 1), link) }
 
-  private[this] def linesFrom(lineFragments: List[List[Fragment]]) = lineFragments
+  private def linesFrom(lineFragments: List[List[Fragment]]) = lineFragments
     .map(_.map {
       _ match
         case ImageFragment(image) => s"![${image.caption}](${image.url})"
@@ -57,7 +57,7 @@ object MarkdownTransformationUseCaseAcceptanceTest:
     .map(_.mkString(" "))
     .map(Line(_))
 
-  private[this] def transformedLinesFrom(
+  private def transformedLinesFrom(
       lineFragments: List[List[Fragment]],
       footnotes: List[Footnote],
   ) =
