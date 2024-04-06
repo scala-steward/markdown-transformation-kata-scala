@@ -9,8 +9,8 @@ final case class MarkdownTransformationParams(
 object MarkdownTransformationParams:
   import scopt.OParser
 
-  private[this] val builder = OParser.builder[MarkdownTransformationParams]
-  private[this] val argParser =
+  private val builder = OParser.builder[MarkdownTransformationParams]
+  private val argParser =
     import builder.*
     OParser.sequence(
       programName("md-converter"),
