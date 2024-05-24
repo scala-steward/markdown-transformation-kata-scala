@@ -2,7 +2,7 @@ package es.eriktorr.markdown_transformation
 package infrastructure
 
 import cats.effect.{IO, Resource}
-import munit.{CatsEffectSuite, ScalaCheckEffectSuite}
+import munit.{AnyFixture, CatsEffectSuite, ScalaCheckEffectSuite}
 import org.scalacheck.Test
 
 import java.nio.file.{Files, Path}
@@ -12,7 +12,7 @@ abstract class MarkdownFileSuite(name: String) extends CatsEffectSuite with Scal
   override def scalaCheckTestParameters: Test.Parameters =
     super.scalaCheckTestParameters.withMinSuccessfulTests(1).withWorkers(1)
 
-  val temporaryFileFixture: Fixture[Path] =
+  val temporaryFileFixture: AnyFixture[Path] =
     import scala.language.unsafeNulls
     val suiteName = s"md-converter-$name-integration-test"
     ResourceSuiteLocalFixture(
@@ -22,4 +22,4 @@ abstract class MarkdownFileSuite(name: String) extends CatsEffectSuite with Scal
       ),
     )
 
-  override def munitFixtures: Seq[Fixture[?]] = List(temporaryFileFixture)
+  override def munitFixtures: Seq[AnyFixture[?]] = List(temporaryFileFixture)
