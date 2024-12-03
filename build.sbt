@@ -40,7 +40,7 @@ lazy val root = (project in file("."))
       "org.apache.logging.log4j" % "log4j-api" % "2.24.2" % Runtime,
       "org.apache.logging.log4j" % "log4j-core" % "2.24.2" % Runtime,
       "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.24.2" % Runtime,
-      "org.scalameta" %% "munit" % "1.0.2" % Test,
+      "org.scalameta" %% "munit" % "1.0.3" % Test,
       "org.scalameta" %% "munit-scalacheck" % "1.0.0" % Test,
       "org.typelevel" %% "cats-core" % "2.12.0",
       "org.typelevel" %% "cats-kernel" % "2.12.0",
