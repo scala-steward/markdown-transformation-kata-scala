@@ -54,11 +54,10 @@ lazy val root = (project in file("."))
       "org.typelevel" %% "scalacheck-effect" % "1.0.4" % Test,
       "org.typelevel" %% "scalacheck-effect-munit" % "1.0.4" % Test,
     ),
-    onLoadMessage := {
+    onLoadMessage :=
       s"""Custom tasks:
          |check - run all project checks
-         |""".stripMargin
-    },
+         |""".stripMargin,
   )
 
 addCommandAlias(
