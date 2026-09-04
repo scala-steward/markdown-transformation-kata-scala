@@ -3,7 +3,7 @@ ThisBuild / version := "1.0.0"
 ThisBuild / idePackagePrefix := Some("es.eriktorr.markdown_transformation")
 Global / excludeLintKeys += idePackagePrefix
 
-ThisBuild / scalaVersion := "3.4.3"
+ThisBuild / scalaVersion := "3.9.0"
 
 Global / cancelable := true
 Global / fork := true
